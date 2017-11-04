@@ -1,0 +1,8 @@
+TODO:
+	TOMORROW:
+		  
+		-Self Issue tracker
+		-Convert to Better UI
+		-Invite system
+		-Multiple projects
+

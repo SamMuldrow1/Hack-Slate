@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+      <style type="text/css">
+      @media screen and (min-width:1px) and (max-width:1365px) {
+          ...
+      }
+      @media screen and (min-width:1366px) {
+          ...
+      }
+      </style>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+      <script src="http://code.jquery.com/jquery-git2.js"></script>
+      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+      <link rel="stylesheet" href="css/style_scratchpad.css">
+
+</head>
+<body>
+
+<div class ="IssueArea">
+
+
+</div>
+<div class ="DoingArea">
+
+
+</div>
+<div class ="DoneArea">
+
+
+</div>
+<div class ="LowerBody">
+
+
+</div>
+<div class ="DeleteArea  transform">
+
+
+</div>
+<div>
+  <div class ="SideBar  transform">
+
+
+  </div>
+  <div class ="SideBar  transform">
+
+
+  </div>
+  <div class ="SideBar  transform">
+
+
+</div>
+</div>
+<div class ="CreateArea">
+  <button id="ExpandCreate"> Add An Issue</button>
+
+</div>
+<script>
+    $("#ExpandCreate").click(function() {
+      console.log("expanding");
+      $('.transform').toggleClass('transform-active');
+    });
+</script>
+
+
+
+
+</body>
+</html>

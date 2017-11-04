@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>Hack Slate</title>
+
+  
+
+	<link rel='stylesheet prefetch' href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900|RobotoDraft:400,100,300,500,700,900'>
+	<link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+
+
+</head>
+
+<body>
+
+<!-- Form Mixin-->
+<!-- Input Mixin-->
+<!-- Button Mixin-->
+<!-- Pen Title-->
+<div class="pen-title" style="margin-left: 450px;">
+  <h1 >
+  <pre >
+ /$$   /$$  /$$$$$$   /$$$$$$  /$$   /$$        /$$$$$$  /$$        /$$$$$$  /$$$$$$$$ /$$$$$$$$
+| $$  | $$ /$$__  $$ /$$__  $$| $$  /$$/       /$$__  $$| $$       /$$__  $$|__  $$__/| $$_____/
+| $$  | $$| $$  \ $$| $$  \__/| $$ /$$/       | $$  \__/| $$      | $$  \ $$   | $$   | $$      
+| $$$$$$$$| $$$$$$$$| $$      | $$$$$/        |  $$$$$$ | $$      | $$$$$$$$   | $$   | $$$$$   
+| $$__  $$| $$__  $$| $$      | $$  $$         \____  $$| $$      | $$__  $$   | $$   | $$__/   
+| $$  | $$| $$  | $$| $$    $$| $$\  $$        /$$  \ $$| $$      | $$  | $$   | $$   | $$      
+| $$  | $$| $$  | $$|  $$$$$$/| $$ \  $$      |  $$$$$$/| $$$$$$$$| $$  | $$   | $$   | $$$$$$$$
+|__/  |__/|__/  |__/ \______/ |__/  \__/       \______/ |________/|__/  |__/   |__/   |________/
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                          
+                                                                          
+  </pre>
+  </h1>
+</div>
+<!-- Form Module-->
+<div class="module form-module "  align=" style="margin-left: 350px;"">
+  <div class="toggle" id="SToggle">
+	Sign Up
+  </div>
+  <div class="form">
+    <h2>Login to your account</h2>
+    <form>
+      <input type="text" id = "SignInUserName" placeholder="Username"/>
+      <input type="password" id = "SignInPassword" placeholder="Password"/>
+      <button id = "SignInform">Login</button>
+    </form>
+  </div>
+  <div class="form">
+    <h2>Create an account</h2>
+    <form>
+      <input type="text"  id="SignUpUserName" placeholder="Username"/>
+      <input type="password" id="SignUpPassword"  placeholder="Password"/>
+      <input type="email" id="SignUpEmail" placeholder="Email Address"/>
+      <button id = "SignUpform">Register</button>
+    </form>
+
+  </div>
+  <div class="cta"><a href="">Forgot your password?</a></div>
+</div>
+		<!-- Insert this line above script imports  -->
+	<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+		
+
+		<script src="js/index.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+		<script src="https://code.jquery.com/jquery-git2.js"></script>
+	<!-- Insert this line after script imports -->
+	<script>if (window.module) module = window.module;</script>
+    
+	
+	
+    <script>
+		var MyID;
+		var IsAuth;
+		var MyUserName;
+		
+		
+		
+		$(function () {
+		
+
+
+		var socket = io();
+		socket.on('SendID', function(id){
+          MyID = id;
+		  console.log(MyID);
+        });
+		function CreateNotification(Notification){
+		
+			var Alert = document.createElement("div");
+			Alert.setAttribute("class", "Alert");
+			Alert.innerHTML = Alert.innerHTML + Notification;
+			document.body.appendChild(Alert);
+			setTimeout(function(){ Alert.remove(); }, 5000);
+		
+		}
+		socket.on('UserExists', function(){
+          
+		  console.log("User already exists try a different user name");
+		  
+			var Alert = document.createElement("div");
+			Alert.setAttribute("class", "Alert");
+			Alert.innerHTML = Alert.innerHTML + 'Username already in use!';
+			document.body.appendChild(Alert);
+			setTimeout(function(){ Alert.remove(); }, 5000);
+		
+        });
+		socket.on('EmailExists', function(){
+          
+		 
+		  
+			var Alert = document.createElement("div");
+			Alert.setAttribute("class", "Alert");
+			Alert.innerHTML = Alert.innerHTML + 'Email already in use!';
+			document.body.appendChild(Alert);
+		
+        });
+		
+		
+		
+
+        
+		$('#SignUpform').click(function(evt){
+			evt.preventDefault();
+				
+
+		if( $('#SignUpPassword').val().length < 8  ){
+			CreateNotification("Password must be 8 Characters");
+			 $('#SignUpUserName').val('');
+			 $('#SignUpPassword').val('');
+			 $('#SignUpEmail').val('');
+
+		}else{
+			var EmailStr = String($('#SignUpEmail').val());
+			var a = EmailStr.includes("@");
+			
+			if( a != true ){
+				CreateNotification("Must use valid email");
+				 $('#SignUpUserName').val('');
+				 $('#SignUpPassword').val('');
+				 $('#SignUpEmail').val('');
+			}else{
+				if($('#SignUpPassword').val().includes('"') || $('#SignUpPassword').val().includes("'") || $('#SignUpEmail').val().includes('"') || $('#SignUpUserName').val().includes("'") ||  $('#SignUpUserName').val().includes('"') || $('#SignUpEmail').val().includes("'") ){
+
+									CreateNotification("No quatations marks");
+
+
+				}else{
+					  document.cookie = "FirstTimeSignIN";
+					  CreateNotification("Account created");
+			          socket.emit('SignUpForm', $('#SignUpUserName').val(), $('#SignUpPassword').val(), $('#SignUpEmail').val(), MyID);
+			          $('#SignUpUserName').val('');
+					  $('#SignUpPassword').val('');
+					  $('#SignUpEmail').val('');
+
+		  		}
+			}
+		
+		}
+
+		  
+          return false;
+		  
+        });
+
+		
+		$('#SignInform').click(function(evt){
+			evt.preventDefault();
+				
+
+		
+          socket.emit('SignInForm', $('#SignInUserName').val(), $('#SignInPassword').val(), MyID);
+          $('#SignInUserName').val('');
+		  $('#SignInPassword').val('');
+		  
+		  
+          return false;
+		  
+        });
+		socket.on('AuthSucc', function(UserName){
+			console.log("succ");
+			localStorage.name = UserName;
+			
+
+			document.location.href = "Main.html";
+
+			//socket.emit('UserDataReq', MyUserName, MyID);
+
+		});
+		socket.on('AuthFail', function(){
+			console.log("Fail");
+		});
+        socket.on('chat message', function(msg){
+          $('#messages').append($('<li>').text(msg));
+          window.scrollTo(0, document.body.scrollHeight);
+        });
+	});
+      
+    </script>
+ <!---<a href="/TOS.html" style="margin-left: 715px"> By Signing Up You Agree To The Terms of Service</a> -->
+</body>
+</html>

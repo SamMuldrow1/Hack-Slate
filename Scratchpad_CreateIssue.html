@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+      <script src="http://code.jquery.com/jquery-git2.js"></script>
+      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+      <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+ <div class=" transform" ></div>
+<div id="toggle">
+
+  <form >
+    Title: <input type="text" name="Title" ><br>
+    Due: <input type="text" name="Due" ><br>
+    Task: <input type="text" name="Task" ><br>
+    Type: <input type="text" name="Type" ><br>
+    <input type="submit" value="Submit">
+  </form>
+    <script>
+
+   
+    
+    $("#CreateIssue").click(function() {
+      $('.transform').toggleClass('transform-active');
+    });
+    $( "form" ).submit(function( event ) {
+      var FormData =JSON.parse(JSON.stringify($(this).serializeArray()));
+      console.log(FormData[0].value );
+      event.preventDefault();
+                  var NewIssue = {
+                    Title: "",
+                    Due: "",
+                    Task: "",
+                    Type: "",
+                    Users: [""],
+                    Date: ""
+                    
+
+
+
+          };
+
+
+          NewIssue.Title = FormData[0].value;
+           NewIssue.Due = FormData[1].value;
+          NewIssue.Task = FormData[2].value;
+          NewIssue.Type = FormData[3].value;
+          
+
+          CreateIssue(MyUserName, MyID, "ProjectName", NewIssue, 0, null, null);
+          
+    });
+
+  </script>
+</div>
+
+
+</body>
+</html>

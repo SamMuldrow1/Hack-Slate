@@ -1,0 +1,24 @@
+{
+	"Email": wow2@gmail.com, »
+	"Password":  "$2a$10$.aOOledTWIR4LshvvEPv9.5829T3zTwPF02.8AFRZIRFyOhhGOnDa" ,
+	"UserName":  "Mas2" ,
+	"id":  "6a4bb963-687a-48c2-b3f0-2e91965d3515" ,
+	
+	"Projects": {
+	    "Project1": {
+	      "Issues": [
+	        {
+	          "Issue1": {
+	            "Due": "",
+	            "Task": "",
+	            "Type": "",
+	            "Users": []
+	          }
+	        }
+	      ],
+	      "Doing": [],
+	      "Done": []
+	    }
+  }
+}
+

@@ -1,0 +1,273 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel='stylesheet prefetch' href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900|RobotoDraft:400,100,300,500,700,900'>
+    <link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+
+
+    <title>Hack Slate</title>
+    <style>
+    #draggable { float: left;  }
+    #droppable {   float: left;  }
+     
+    </style>
+  </head>
+  <body>
+      <!-- Insert this line above script imports  -->
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+   
+      <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+      
+      
+
+      <script src="js/index.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+      <script src="http://code.jquery.com/jquery-git2.js"></script>
+      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+  <!-- Insert this line after script imports -->
+  <script>if (window.module) module = window.module;</script>
+
+    <button class = "FeedLink" style="text-decoration: none;" ><a href="/Main.html">Board</a></button>
+    <div class="InfoBack">
+
+    <p class="AreaText">Analytics</p>
+    <canvas id="PieChart" width="500" height="500" class="PieGraph"></canvas>
+    <canvas id="RadarChart" width="500" height="500" class="RadarGraph" ></canvas>
+    <script>
+
+    </script>
+
+    </div>
+
+    <div class="FeedBack" id="FeedArea">
+      <p class="AreaText">Feed</p>
+
+
+    </div>
+
+    
+      
+   
+
+
+      
+
+
+      
+    
+
+
+    
+    
+
+
+
+
+    <script> 
+    var MyID;
+    var MyUserName;
+		var IssueNum = 0;
+    var Issuedata = [];
+
+		
+		
+      
+
+        var socket = io();
+        console.log(document.cookie);
+        console.log(localStorage.name);
+        MyUserName = localStorage.name;
+
+        socket.on('SendID', function(id){
+          MyID = id;
+          
+          
+
+         setTimeout(function(){ socket.emit('GetProjects', MyUserName , MyID);}, 00);
+          console.log("Get projects");
+
+          
+        });
+         socket.on('GetProjects', function(Projects, CurrentIssue){
+
+          console.log("displaying issues");
+          var ProjectObject;
+          ProjectObject = JSON.parse(Projects);
+          var CurrentObject = JSON.parse(CurrentIssue);
+          Issuedata[0] = ProjectObject[0].ProjectName.Issues.length;
+          Issuedata[1] = ProjectObject[0].ProjectName.Doing.length;
+          Issuedata[2] = ProjectObject[0].ProjectName.Done.length;
+          var RadarData = [];
+          var RadarNum = [];
+
+          for (i = 0; i < CurrentObject[0].Type.length; i++) { 
+              RadarData.push(CurrentObject[0].Type[i].Type);
+
+          }
+          var RadarDataCounter;
+          for(RadarDataCounter = 0; RadarDataCounter < RadarData.length; RadarDataCounter++){
+            for(i = 1; i < ProjectObject[0].ProjectName.Issues.length; i++){
+                    if(ProjectObject[0].ProjectName.Issues[i].Type.includes(RadarData[RadarDataCounter])){
+                      if(RadarNum[RadarDataCounter] != null){
+                        RadarNum[RadarDataCounter] += 1;
+                      }else{
+                        RadarNum[RadarDataCounter] = 1;
+                      }
+                      
+                    }
+
+
+            }
+            for(i = 0; i < ProjectObject[0].ProjectName.Doing.length; i++){
+                    if(ProjectObject[0].ProjectName.Doing[i].Type.includes(RadarData[RadarDataCounter])){
+                      if(RadarNum[RadarDataCounter] != null){
+                        RadarNum[RadarDataCounter] += 1;
+                      }else{
+                        RadarNum[RadarDataCounter] = 1;
+                      }
+                      
+                    }
+
+
+            }
+            for(i = 0; i < ProjectObject[0].ProjectName.Done.length; i++){
+                    if(ProjectObject[0].ProjectName.Done[i].Type.includes(RadarData[RadarDataCounter])){
+                      if(RadarNum[RadarDataCounter] != null){
+                        RadarNum[RadarDataCounter] += 1;
+                      }else{
+                        RadarNum[RadarDataCounter] = 1;
+                      }
+                      
+                    }
+
+            }
+
+            if(RadarData.length != RadarNum.length){
+
+                var b = RadarData.length- RadarNum.length;
+
+                for(i = 0; i < b; i++){
+                  RadarNum[RadarNum.length+i] = 0;
+                  console.log(i);
+
+
+                }
+
+            }
+
+        }
+          
+       
+
+
+          console.log(RadarNum);
+            var ctx = document.getElementById("PieChart");
+            var ctx2 = document.getElementById("RadarChart");
+
+            var myChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                  datasets: [{
+                      data: [Issuedata[0], Issuedata[1], Issuedata[2]],
+                      backgroundColor: ["#FF6384", "#36A2EB", "#FFCD56"]
+                  }],
+
+
+                  // These labels appear in the legend and in the tooltips when hovering different arcs
+                  labels: [
+                      'Issues',
+                      'Doing',
+                      'Done'
+                  ]
+                },
+                options: {
+                  responsive: false,
+
+                  // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+
+                  maintainAspectRatio: false,
+
+                }
+            });
+            var myRadarChart = new Chart(ctx2, {
+                type: 'radar',
+                data: {
+                  datasets: [{
+                      data: RadarNum,
+                      borderColor: ["#36A2EB"]
+                  }],
+
+
+                  // These labels appear in the legend and in the tooltips when hovering different arcs
+                  labels: RadarData
+                },
+                options: {
+                  responsive: false,
+
+                  // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+
+                  maintainAspectRatio: false,
+                  legend: {
+                              display: false
+                            
+                          }
+
+
+                }
+            });
+            
+            console.log(CurrentObject[0].Feed.length);
+              
+           for(var i = CurrentObject[0].Feed.length - 1; i >= 0; i--) {
+
+              var IssueObject = document.createElement("div");
+              IssueObject.setAttribute("class", "FeedUpdate");
+              
+
+              
+              //$( "#Issue").draggable();
+              var EmojiSwitch;
+              switch(Math.floor((Math.random() * 3) + 1)) {
+                  default:
+                      
+                      EmojiSwitch = "em em-fire";
+                      break;  
+                  case 1:
+                      EmojiSwitch = "em em-raised_hands";
+                      break;
+                  case 2:
+                      EmojiSwitch = "em em-sunny";
+                      break;
+                 
+              }
+              
+              IssueObject.innerHTML = IssueObject.innerHTML +  "<div class='FeedText' >"+"<b>" + CurrentObject[0].Feed[i].Title +" <i class='"+ EmojiSwitch +"'></i> " +"</b>" +"<br>" 
+              +"The task was: "+ CurrentObject[0].Feed[i].Task +"<br>" + CurrentObject[0].Feed[i].FeedDate  + "</div>";
+              document.body.appendChild(IssueObject);
+              
+              
+              IssueArea = document.getElementById("FeedArea");
+              IssueArea.appendChild(IssueObject);
+              
+
+
+           } 
+            
+
+
+
+        });
+
+
+
+        
+    </script>
+  </body>
+</html>

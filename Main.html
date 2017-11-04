@@ -1,0 +1,891 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel='stylesheet prefetch' href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900|RobotoDraft:400,100,300,500,700,900'>
+    <link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+
+
+    <title>Hack Slate</title>
+    <style>
+    #draggable { float: left;  }
+    #droppable {   float: left;  }
+     
+    </style>
+  </head>
+  <body>
+      <!-- Insert this line above script imports  -->
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+   
+      <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+      
+      
+
+      
+      <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+      <script src="//code.jquery.com/jquery-git2.js"></script>
+      <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+      <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+      <link href="//afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+
+  <!-- Insert this line after script imports -->
+  <script>if (window.module) module = window.module;</script>
+
+    
+      
+    <button class = "CreateIssue" id = "CreateIssueButton" onclick="toggleCreate('Mas2' , MyID, 'ProjectName', null, 0)">Create Issue 
+    <div class = "circleBase Circle"> <div class="CircleText">+</div></div>
+
+
+    </button>
+
+      <div class="transformType"  >
+      <div id="toggleType">
+        <form  id="toggleType2" >
+        Type: <input type="text" name="Type" ><br>
+
+
+
+        
+
+        </form>
+      <button type="submit" form="toggleType2"   class = "circleBase Circle" > <div class="CircleText">+</div></button>
+      </div>
+
+      </div>
+
+
+      <div class="transformJoinType"  >
+      <div id="JoinType">
+        
+      <p id = "JoinTypetext"></p>
+      <input id="JoinTypeId" >
+      <p>sshhh don't give this to anybody unless <br>
+      you want them to join <i class="em em-no_mouth"></i>
+      </p>
+
+        <form  id="JointoggleType2" >
+        ID: <input type="text" name="Type" ><br>
+        <p>Add somebody's ID here to join them</p>
+
+
+
+        
+
+        </form>
+      <button type="submit" form="JointoggleType2"   class = "circleBase Circle" > <div class="CircleText">+</div></button>
+      </div>
+
+      </div>
+
+      <button class = "FeedLink" style="text-decoration: none;" ><a href="/InfoPage.html">Feed</a></button>
+     <button class = "CreateType" id = "CreateTypeButton" onclick="">Create Type
+    <div class = "circleBase Circle"> <div class="CircleText">+</div></div>
+
+
+    </button>
+    <button class = "JoinType" id = "JoinButton" onclick="">Share/Join
+    
+
+
+    </button>
+
+    <script>
+
+
+
+
+      
+      $("#CreateIssueButton").click(function() {
+       
+        $('.transform').toggleClass('transform-active');
+  
+      });
+
+      $("#CreateTypeButton").click(function() {
+       
+       
+        var off=document.getElementById('toggleType');
+        
+        if (off.style.display == "none") {
+            off.style.display = "block";
+        } else {
+            off.style.display = "none";
+        }
+        
+         $('.transformType').toggleClass('transformType-active');
+         
+      });
+      $("#JoinButton").click(function() {
+       
+       
+        var off=document.getElementById('JoinType');
+        
+        if (off.style.display == "none") {
+            off.style.display = "block";
+        } else {
+            off.style.display = "none";
+        }
+        
+         $('.transformJoinType').toggleClass('transformJoinType-active');
+         
+      });
+          
+    </script>
+      
+
+
+      
+    
+
+
+    
+    <div class = "CurrentArea" id = "CurrentArea">
+
+        <p class="AreaText">Current Issue</p>
+        <button onclick="DeleteCurrentIssue();" class="CurrentIssueButton">Mark As Complete</button>
+
+
+
+
+    </div>
+
+    <div id="toggle" class="transform CreatIssueSpace">
+
+
+      <form  id="nameform">
+        Title: <input type="text" name="Title" ><br>
+        Due: <input type="text" name="Due" ><br>
+        Task: <input type="text" name="Task" ><br>
+        Type: <select id="TypeSelection" name="Type">
+          
+        </select>
+
+        
+
+      </form>
+      <button type="submit" form="nameform"  class = "circleBase Circle"> <div class="CircleText">+</div></button>
+        <script>
+      $( "#CurrentArea" ).droppable({
+
+        
+        drop: function( event, ui ) {
+          console.log("Added an issue to current area");
+          var draggable = ui.draggable;
+          var id = draggable.attr("id");
+          var x = document.getElementById(id).innerHTML;
+          x = x.split("'");
+          x = (JSON.parse(JSON.stringify(x[1])));
+          console.log(JSON.parse(x).Title);
+          var NewIssue = {
+            Title: "",
+            Due: "",
+            Task: "",
+            Type: "",
+            Users: [""],
+            Date: ""
+                    
+
+
+
+          };
+        
+          NewIssue.Title = JSON.parse(x).Title;
+          NewIssue.Due = JSON.parse(x).Due;
+          NewIssue.Task = JSON.parse(x).Task;
+          NewIssue.Type = JSON.parse(x).Type;
+          NewIssue.Users = JSON.parse(x).Users;
+          NewIssue.PastCat = id.toString().split(".")[1]
+          NewIssue.PastNum = JSON.parse(x).NumberVar;
+          var IDCategory;
+  
+          CreateCurrentIssue(NewIssue);
+
+
+          
+
+          
+
+          
+      
+          
+          $( this )
+            .addClass( "" );
+            
+        }
+      });
+        $( "#CreateArea" ).droppable({
+        
+        drop: function( event, ui ) {
+          var draggable = ui.draggable;
+          var id = draggable.attr("id");
+          var x = document.getElementById(id).innerHTML;
+          x = x.split("'");
+          x = (JSON.parse(JSON.stringify(x[1])));
+          console.log(JSON.parse(x).Title);
+          var NewIssue = {
+            Title: "",
+            Due: "",
+            Task: "",
+            Type: "",
+            Users: [""],
+            Date: ""
+                    
+
+
+
+          };
+        
+          NewIssue.Title = JSON.parse(x).Title;
+          NewIssue.Due = JSON.parse(x).Due;
+          NewIssue.Task = JSON.parse(x).Task;
+          NewIssue.Type = JSON.parse(x).Type;
+          NewIssue.Users = JSON.parse(x).Users;
+          var IDCategory;
+  
+          switch(id.toString().split(".")[1]) {
+            default:
+                IDCategory = 1;
+                SwitchIssue( null, null, null, NewIssue, 2, 0, id.toString().split(".")[2]);
+                console.log(id.toString().split(".")[1]);
+                break;  
+            case "1":
+                IDCategory = 1;
+                SwitchIssue( null, null, null, NewIssue, 2, 1, id.toString().split(".")[2]);
+                console.log(id.toString().split(".")[1]);
+                break;
+            case "2":
+                IDCategory = 2;
+                //SwitchIssue( null, null, null, NewIssue, 2, 2, id.toString().split(".")[2]);
+                console.log(id.toString().split(".")[1] + "Moved one of own class, not adding...");
+                break;
+           
+        }
+          
+
+          
+
+          
+      
+          
+          $( this )
+            .addClass( "" );
+            
+        }
+      });
+        document.getElementById('toggle').style.display = "none";
+        document.getElementById('toggleType').style.display = "none";
+        document.getElementById('JoinType').style.display = "none";
+        $( "#nameform" ).submit(function( event ) {
+          var FormData =JSON.parse(JSON.stringify($(this).serializeArray()));
+          console.log(FormData[0].value );
+          event.preventDefault();
+                      var NewIssue = {
+                        Title: "",
+                        Due: "",
+                        Task: "",
+                        Type: "",
+                        Users: [""],
+                        Date: ""
+                        
+
+
+
+              };
+
+
+              NewIssue.Title = FormData[0].value;
+              NewIssue.Due = FormData[1].value;
+              NewIssue.Task = FormData[2].value;
+              NewIssue.Type = FormData[3].value;
+              
+
+              CreateIssue(MyUserName, MyID, "ProjectName", NewIssue, 0, null, null);
+              FeedUpdate(Desc ={Title: "The Issue '" + NewIssue.Title + "' Was Created", Task: NewIssue.Task });
+              return false;
+              
+        });
+        $( "#toggleType2" ).submit(function( event ) {
+          var FormData =JSON.parse(JSON.stringify($(this).serializeArray()));
+          console.log(FormData[0].value );
+          event.preventDefault();
+
+
+
+
+             
+           
+              
+              console.log("Creating a new type");
+              CreateNewType(FormData[0].value);
+                //socket.emit('GetProjects', MyUserName , MyID);
+              return false;
+              
+        });
+        $( "#JointoggleType2" ).submit(function( event ) {
+          var FormData =JSON.parse(JSON.stringify($(this).serializeArray()));
+          console.log(FormData[0].value );
+          event.preventDefault();
+
+
+
+
+             
+           
+              
+              
+              localStorage.name = String(FormData[0].value);
+              location.reload();
+              
+              return false;
+              
+        });
+
+      </script>
+    </div>
+
+  
+
+
+    <div id="DoneArea" class = "DoneArea" >
+      <p class="AreaText">Done</p>
+    </div>
+      <div id="DoingArea" class = "DoingArea" >
+      <p class="AreaText">Doing</p>
+    </div>
+       <div id="IssueArea" class = "IssueArea" >
+      <p class="AreaText">Issues</p>
+    </div>
+
+        <div id="DeleteArea" class = "DeleteArea" >
+      <p class="AreaText">Delete Issue</p>
+    </div>
+
+
+    <script>
+
+        function CheckElement(Element){
+            console.log(Element);
+            if(String(Element).includes("'")){
+                console.log(Element);
+                return Element;
+
+            }else{
+
+                AppendedElement = "'"+Element+"'";
+                console.log(AppendedElement);
+                return Element;
+            }
+
+
+        }
+        function toggleCreate(){
+
+        var off=document.getElementById('toggle');
+        if (off.style.display == "none") {
+            off.style.display = "block";
+        } else {
+            off.style.display = "none";
+        }
+        }   
+    $( function() {
+      $( "#draggable" ).draggable({ containment: "#IssueArea", scroll: false });
+      $( "#Doing" ).draggable({ containment: "#DoingArea", scroll: false });
+     // $( "#Issue" ).draggable();
+      $( "#IssueArea" ).droppable({
+        
+        drop: function( event, ui ) {
+          var draggable = ui.draggable;
+          var id = draggable.attr("id");
+          var x = document.getElementById(id).innerHTML;
+          x = x.split("'");
+          x = (JSON.parse(JSON.stringify(x[1])));
+          console.log(JSON.parse(x).Title);
+
+          
+            console.log(x);
+          var NewIssue = {
+            Title: "",
+            Due: "",
+            Task: "",
+            Type: "",
+            Users: [""],
+            Date: ""
+                    
+
+
+
+          };
+          
+          NewIssue.Title = JSON.parse(x).Title;
+          NewIssue.Due = JSON.parse(x).Due;
+          NewIssue.Task = JSON.parse(x).Task;
+          NewIssue.Type = JSON.parse(x).Type;
+          NewIssue.Users = JSON.parse(x).Users;
+          
+          var IDCategory;
+  
+          switch(id.toString().split(".")[1]) {
+            default:
+                IDCategory = 1; 
+                //SwitchIssue( null, null, null, NewIssue, 2, 0, id.toString().split(".")[1]);
+                console.log(id.toString().split(".")[1] + "Moved one of own class, not adding...");
+                break;
+            case "1":
+                IDCategory = 1;
+                SwitchIssue( null, null, null, NewIssue, 0, 1, id.toString().split(".")[2]);
+                console.log(id.toString().split(".")[1]);
+                break;
+            case "2":
+                IDCategory = 2;
+                SwitchIssue( null, null, null, NewIssue, 0, 2, id.toString().split(".")[2]);
+                break;
+           
+        }
+          
+
+          
+
+          
+      
+
+          $( this )
+            .addClass( "" );
+            
+        }
+      });
+      $( "#DoneArea" ).droppable({
+        
+        drop: function( event, ui ) {
+          var draggable = ui.draggable;
+          var id = draggable.attr("id");
+          var x = document.getElementById(id).innerHTML;
+          x = x.split("'");
+          x = (JSON.parse(JSON.stringify(x[1])));
+          console.log(JSON.parse(x).Title);
+          var NewIssue = {
+            Title: "",
+            Due: "",
+            Task: "",
+            Type: "",
+            Users: [""],
+            Date: ""
+                    
+
+
+
+          };
+        
+          NewIssue.Title = JSON.parse(x).Title;
+          NewIssue.Due = JSON.parse(x).Due;
+          NewIssue.Task = JSON.parse(x).Task;
+          NewIssue.Type = JSON.parse(x).Type;
+          NewIssue.Users = JSON.parse(x).Users;
+          var IDCategory;
+          FeedUpdate(Desc ={Title: "The Issue '" + NewIssue.Title + "' Was Completed", Task: NewIssue.Task });
+          switch(id.toString().split(".")[1]) {
+            default:
+                IDCategory = 1;
+                SwitchIssue( null, null, null, NewIssue, 2, 0, id.toString().split(".")[2]);
+                console.log(id.toString().split(".")[1]);
+                break;  
+            case "1":
+                IDCategory = 1;
+                SwitchIssue( null, null, null, NewIssue, 2, 1, id.toString().split(".")[2]);
+
+                console.log(id.toString().split(".")[1]);
+                break;
+            case "2":
+                IDCategory = 2;
+                //SwitchIssue( null, null, null, NewIssue, 2, 2, id.toString().split(".")[2]);
+                console.log(id.toString().split(".")[1] + "Moved one of own class, not adding...");
+                break;
+           
+        }
+          
+
+          
+
+          
+      
+          
+          $( this )
+            .addClass( "" );
+            
+        }
+      });
+      $( "#DeleteArea" ).droppable({
+        
+        drop: function( event, ui ) {
+          var draggable = ui.draggable;
+          var id = draggable.attr("id");
+          var x = document.getElementById(id).innerHTML;
+          x = x.split("'");
+          x = (JSON.parse(JSON.stringify(x[1])));
+          console.log(JSON.parse(x).Title);
+          var NewIssue = {
+            Title: "",
+            Due: "",
+            Task: "",
+            Type: "",
+            Users: [""],
+            Date: ""
+                    
+
+
+
+          };
+        
+          NewIssue.Title = JSON.parse(x).Title;
+          NewIssue.Due = JSON.parse(x).Due;
+          NewIssue.Task = JSON.parse(x).Task;
+          NewIssue.Type = JSON.parse(x).Type;
+          NewIssue.Users = JSON.parse(x).Users;
+          var IDCategory;
+  
+          switch(id.toString().split(".")[1]) {
+            default:
+                IDCategory = 1;
+                SwitchIssue( null, null, null, NewIssue, 3, 0, id.toString().split(".")[2]);
+                console.log(id.toString().split(".")[1]); 
+               location.reload();
+                break;
+            case "1":
+                IDCategory = 1;
+                SwitchIssue( null, null, null, NewIssue, 3, 1, id.toString().split(".")[2]);
+                console.log(id.toString().split(".")[1]);
+               location.reload();
+                break;
+            case "2":
+                IDCategory = 2;
+                SwitchIssue( null, null, null, NewIssue, 3, 2, id.toString().split(".")[2]);
+                location.reload();
+                  break;
+           
+        }
+          
+
+          
+
+          
+      
+          
+          $( this )
+            .addClass( "" );
+            
+        }
+      });
+      $( "#DoingArea" ).droppable({
+        
+        drop: function( event, ui ) {
+          var draggable = ui.draggable;
+          var id = draggable.attr("id");
+          var x = document.getElementById(id).innerHTML;
+          x = x.split("'");
+          x = (JSON.parse(JSON.stringify(x[1])));
+          console.log(JSON.parse(x).Title);
+          var NewIssue = {
+            Title: "",
+            Due: "",
+            Task: "",
+            Type: "",
+            Users: [""],
+            Date: ""
+                    
+
+
+
+          };
+        
+          NewIssue.Title = JSON.parse(x).Title;
+          NewIssue.Due = JSON.parse(x).Due;
+          NewIssue.Task = JSON.parse(x).Task;
+          NewIssue.Type = JSON.parse(x).Type;
+          NewIssue.Users = JSON.parse(x).Users;
+          var IDCategory;
+  
+          switch(id.toString().split(".")[1]) {
+            default:
+                IDCategory = 1;
+                SwitchIssue( null, null, null, NewIssue, 1, 0, id.toString().split(".")[2]);
+                console.log(id.toString().split(".")[2]); 
+                break;
+            case "1":
+                IDCategory = 1;
+                //SwitchIssue( null, null, null, NewIssue, 2, 1, id.toString().split(".")[2]);
+                console.log(id.toString().split(".")[1] + "Moved one of own class, not adding...");
+                break;
+            case "2":
+                IDCategory = 2;
+                SwitchIssue( null, null, null, NewIssue, 1, 2, id.toString().split(".")[2]);
+                break;
+           
+        }
+          
+
+          
+
+          
+      
+          
+          $( this )
+            .addClass( "" );
+            
+        }
+      });
+    } );
+    </script>
+
+
+
+    <script> 
+    var MyID;
+    var MyUserName;
+		var IssueNum = 0;
+
+		
+		
+      
+
+        var socket = io();
+        console.log(document.cookie);
+        console.log(localStorage.name);
+        MyUserName = localStorage.name;
+        document.getElementById("JoinTypetext").innerHTML = "Your Unique Project ID is: "
+        document.getElementById("JoinTypeId").value = MyUserName;
+
+        socket.on('SendID', function(id){
+          MyID = id;
+          
+          
+          if (document.cookie != "FirstTimeSignIN"){
+            setTimeout(function(){ socket.emit('GetProjects', MyUserName , MyID); console.log("Get projects");
+
+
+             }, 200);
+            
+            
+            console.log("Get projects");
+        }else{
+          setTimeout(function(){ socket.emit('AddExamples', MyUserName , MyID);  
+
+        console.log("adding AddExamples");
+        document.cookie = "why are you looking in the cookies ;)";
+        CreateNewType("General");
+        
+
+          
+        }, 300);
+         
+         
+        }
+          
+        });
+        function CreateProject(){
+
+            socket.emit('CreateProjects', MyUserName , MyID);
+            document.cookie = "Why are you looking in the cookies ;)";
+            location.reload();
+
+
+            return false
+        }
+        function FeedUpdate(Desc){
+            console.log(Desc);
+            var d = new Date();
+            var datetime = d.getMonth() + 1 +"/"+ d.getDate() +"/"+ d.getFullYear();
+            socket.emit('FeedUpdate', MyUserName , MyID, Desc, datetime);
+
+
+            return false
+        }
+        function DeleteIssue(Issue){
+
+            
+            socket.emit('DeleteIssue', UserName , ID, ProjectName, NewIssue, Category);
+
+
+
+            return false
+        }
+        function CreateNewType(NewType){
+
+            
+            socket.emit('CreateNewType', MyUserName, MyID, Type={Type:NewType});
+            console.log("creating a new type");
+            location.reload();
+
+
+
+            return false
+        }
+        function CreateCurrentIssue(Issue){
+
+            
+            socket.emit('CreateCurrentIssue', MyUserName, MyID, "ProjectName", Issue);
+            location.reload();
+
+
+
+
+            return false
+        }
+        function DeleteCurrentIssue(){
+
+            
+            socket.emit('DeleteCurrentIssue', MyUserName, MyID);
+            CreateCurrentIssue();
+            setTimeout(function(){ location.reload(); }, 200);
+            
+
+
+
+
+            return false
+        }
+        function SwitchIssue(UserName, MyID, ProjectName, Issue, Category, IDCategory, PastNumber){
+
+            
+            CreateIssue(MyUserName, MyID, "ProjectName", Issue, Category, IDCategory, PastNumber);
+            
+
+
+            return false
+        }
+        function CreateIssue(UserName , ID, ProjectName, NewIssue, Category, IsSwtich, PastNumber){
+            console.log("Creating an Issue");
+            
+
+          var d = new Date();
+          var n = d.getTime();
+          NewIssue.Date = n;
+   
+          socket.emit('CreatIssue', UserName , ID, ProjectName, NewIssue, Category, IsSwtich, PastNumber);
+          console.log(Category);
+          location.reload();
+            return false
+        }
+
+        
+        
+        
+        socket.on('GetProjects', function(Projects, CurrentIssue){
+
+          console.log("displaying issues");
+          var ProjectObject;
+          ProjectObject = JSON.parse(Projects);
+          var CurrentObject = JSON.parse(CurrentIssue);
+          if(CurrentObject[0].Type != null){
+              for (i = 0; i < CurrentObject[0].Type.length; i++) { 
+              var SelectObject = document.createElement("option");
+              SelectObject.setAttribute("value", CurrentObject[0].Type[i].Type);
+              SelectObject.innerHTML = CurrentObject[0].Type[i].Type;
+
+              
+              //$( "#Issue").draggable();
+             
+              document.body.appendChild(SelectObject);
+              
+              
+              SelectArea = document.getElementById("TypeSelection");
+              SelectArea.appendChild(SelectObject);
+
+
+
+              }
+          
+
+              
+
+
+          }
+          if(CurrentObject[0].CurrentIssue != null){
+          
+              var IssueObject = document.createElement("div");
+              IssueObject.setAttribute("class", "Issue");
+              CurrentObject[0].CurrentIssue
+
+              
+              //$( "#Issue").draggable();
+              IssueObject.innerHTML = IssueObject.innerHTML +  "<div class='IssueText' >"  +"<b> " + CurrentObject[0].CurrentIssue.Title +" </b>"+" <br> Due: " + CurrentObject[0].CurrentIssue.Due + " <br> Task: " + CurrentObject[0].CurrentIssue.Task + " <br> Type: " + CurrentObject[0].CurrentIssue.Type + " <br> Users: " + CurrentObject[0].CurrentIssue.Users + "" + "<div>";
+              document.body.appendChild(IssueObject);
+              $( IssueObject).draggable();
+              
+              IssueArea = document.getElementById("CurrentArea");
+              IssueArea.appendChild(IssueObject);
+              
+
+
+          }
+          for (i = 0; i < ProjectObject[0].ProjectName.Issues.length; i++) { 
+              ProjectObject[0].ProjectName.Issues
+              var IssueObject = document.createElement("div");
+              IssueObject.setAttribute("class", "Issue");
+              IssueNum += i;
+              IssueObject.id = "Issue"+IssueNum+".0"+"."+ProjectObject[0].ProjectName.Issues[i].NumberVar;
+
+              
+              //$( "#Issue").draggable();
+              IssueObject.innerHTML = IssueObject.innerHTML + "<p hidden> '"+ JSON.stringify(ProjectObject[0].ProjectName.Issues[i]) +"' </p>"+ "<div class='IssueText' >"  +"<b> " + ProjectObject[0].ProjectName.Issues[i].Title +" </b>"+" <br> Due: " + ProjectObject[0].ProjectName.Issues[i].Due + " <br> Task: " + ProjectObject[0].ProjectName.Issues[i].Task + " <br> Type: " + ProjectObject[0].ProjectName.Issues[i].Type + " <br> Users: " + ProjectObject[0].ProjectName.Issues[i].Users + "" + "<div>";
+              document.body.appendChild(IssueObject);
+              $( IssueObject).draggable();
+              
+              IssueArea = document.getElementById("IssueArea");
+              IssueArea.appendChild(IssueObject);
+              
+
+
+          }
+          
+          for (i = 0; i < ProjectObject[0].ProjectName.Done.length; i++) { 
+              ProjectObject[0].ProjectName.Issues
+              var IssueObject = document.createElement("div");
+              IssueObject.setAttribute("class", "Issue");
+              IssueNum += i;
+              IssueObject.id = "Issue"+IssueNum+.2+"."+ProjectObject[0].ProjectName.Done[i].NumberVar;
+
+              
+              //$( "#Issue").draggable();
+              IssueObject.innerHTML = IssueObject.innerHTML+ "<p hidden> '" + JSON.stringify(ProjectObject[0].ProjectName.Done[i]) +"' </p>"+ "<div class='IssueText' >"  + "<b> " + ProjectObject[0].ProjectName.Done[i].Title +" </b>"+" <br> Due: " + ProjectObject[0].ProjectName.Done[i].Due + " <br> Task: " + ProjectObject[0].ProjectName.Done[i].Task + " <br> Type: " + ProjectObject[0].ProjectName.Done[i].Type + " <br> Users: " + ProjectObject[0].ProjectName.Done[i].Users + "" + "<div>";
+              document.body.appendChild(IssueObject);
+              $( IssueObject).draggable();
+              
+              IssueArea = document.getElementById("DoneArea");
+              IssueArea.appendChild(IssueObject);
+              
+
+
+          } 
+          
+          for (i = 0; i < ProjectObject[0].ProjectName.Doing.length; i++) { 
+
+              ProjectObject[0].ProjectName.Issues
+              var IssueObject = document.createElement("div");
+              IssueObject.setAttribute("class", "Issue");
+              IssueNum += i;
+              IssueObject.id = "Issue"+IssueNum+.1+"."+ProjectObject[0].ProjectName.Doing[i].NumberVar;
+              
+              IssueObject.innerHTML = IssueObject.innerHTML + "<p hidden> '"+ JSON.stringify(ProjectObject[0].ProjectName.Doing[i]) +"' </p>" + "<div class='IssueText' >" +"<b >" + ProjectObject[0].ProjectName.Doing[i].Title +"</b>"+" <br> Due: " + ProjectObject[0].ProjectName.Doing[i].Due + " <br> Task: " + ProjectObject[0].ProjectName.Doing[i].Task + " <br> Type: " + ProjectObject[0].ProjectName.Doing[i].Type + " <br> Users: " + ProjectObject[0].ProjectName.Doing[i].Users + "</div>" ;
+              document.body.appendChild(IssueObject);
+              $( IssueObject).draggable();
+              IssueArea = document.getElementById("DoingArea"); 
+              IssueArea.appendChild(IssueObject);
+              
+
+
+          }
+          
+          
+
+
+        });
+
+    
+    </script>
+	<script>
+	
+	
+	</script>
+  </body>
+</html>
